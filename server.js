@@ -26,4 +26,19 @@ app.get('/steam/profile', function(httpRequest, httpResponse) {
 		httpResponse.setHeader('Content-Type', 'application/json');
 		httpResponse.send(steamHttpBody);
 	});
-});	
+});
+
+app.get('/steam/test', function(httpRequest, httpResponse) {
+	
+	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=BFB909BB8DAEBE46799D90028C20BE61&steamids=76561198006730825';
+
+	request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+
+		var response = JSON.parse(steamHttpBody);
+		var personaname = response.response.players[0].personaname;
+		var avatar = response.response.players[0].avatarfull;
+		httpResponse.render('test', { personaname: personaname, avatar: avatar });
+	
+	});
+
+});
