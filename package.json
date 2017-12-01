@@ -1,0 +1,22 @@
+{
+  "name": "roshpit",
+  "version": "1.0.0",
+  "description": "Roshpit is a web app for Dota2 players. The aim is to get players stats to help them getting better at Dota2.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EchoesNotToday/Roshpit.git"
+  },
+  "author": "Echoes Not Today",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EchoesNotToday/Roshpit/issues"
+  },
+  "homepage": "https://github.com/EchoesNotToday/Roshpit#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
