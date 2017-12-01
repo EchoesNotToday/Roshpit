@@ -13,6 +13,9 @@ console.log('Listening on port ' + port);
 //Request package
 var request = require('request');
 
+//Pug template package
+app.set('view engine', 'pug');
+
 // First test with API
 var secret = require('./secret/api');
 const API_KEY = secret.apiKey;
