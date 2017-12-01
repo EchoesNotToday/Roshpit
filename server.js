@@ -26,6 +26,8 @@ app.get('/steam/profile', function(httpRequest, httpResponse) {
 		httpResponse.setHeader('Content-Type', 'application/json');
 		httpResponse.send(steamHttpBody);
 	});
+});
+
 app.get('/steam/test', function(httpRequest, httpResponse) {
 	
 	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=76561198006730825';
@@ -39,4 +41,14 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 	
 	});
 
+});
+app.get('/steam/test', function(httpRequest, httpResponse) {
+
+	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=46465097'
+
+	request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+
+		var response = JSON.parse(steamHttpBody);
+		
+	});
 });
