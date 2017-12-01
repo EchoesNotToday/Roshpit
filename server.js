@@ -14,7 +14,7 @@ console.log('Listening on port ' + port);
 var request = require('request');
 
 // First test with API
-var secret = require('./api');
+var secret = require('./secret/api');
 const API_KEY = secret.apiKey;
 app.get('/steam/profile', function(httpRequest, httpResponse) {
 	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/'+'v0002/?key='+API_KEY+'&steamids=76561198006730825';
