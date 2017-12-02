@@ -28,9 +28,9 @@ app.get('/steam/profile', function(httpRequest, httpResponse) {
 	});
 });
 
+//Response with render
 app.get('/steam/test', function(httpRequest, httpResponse) {
 
-	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=BFB909BB8DAEBE46799D90028C20BE61&steamids=76561198006730825';
 	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=76561198006730825';
 
 	var url1 = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=46465097';
@@ -64,3 +64,6 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 	});
 
 });
+
+
+//convert steam 64id into 32id = var 64id - 76561197960265728 = 32id
