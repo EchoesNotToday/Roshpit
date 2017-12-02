@@ -33,6 +33,27 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=BFB909BB8DAEBE46799D90028C20BE61&steamids=76561198006730825';
 	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=76561198006730825';
 
+	var url1 = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=46465097';
+
+	request.get(url1, function(error, steamHttpResponse, steamHttpBody) {
+		var response = JSON.parse(steamHttpBody);
+		//last Match id
+		var idLastM = response.result.matches[0].match_id;
+		//last Match Radiant Players
+		var lastMRadiantPlayer1 = response.result.matches[0].players[0];
+		var lastMRadiantPlayer2 = response.result.matches[0].players[1];
+		var lastMRadiantPlayer3 = response.result.matches[0].players[2];
+		var lastMRadiantPlayer4 = response.result.matches[0].players[3];
+		var lastMRadiantPlayer5 = response.result.matches[0].players[4];
+		//last Match Dire Players
+		var lastMDirePlayer1 = response.result.matches[0].players[5];
+		var lastMDirePlayer2 = response.result.matches[0].players[6];
+		var lastMDirePlayer3 = response.result.matches[0].players[7];
+		var lastMDirePlayer4 = response.result.matches[0].players[8];
+		var lastMDirePlayer5 = response.result.matches[0].players[9];
+		console.log(idLastM); 
+		console.log(lastMDirePlayer2);
+	});
 	request.get(url, function(error, steamHttpResponse, steamHttpBody) {
 
 		var response = JSON.parse(steamHttpBody);
