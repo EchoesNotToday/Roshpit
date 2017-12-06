@@ -38,7 +38,7 @@ app.get('/steam/profile', function(httpRequest, httpResponse) {
 //Response with render
 app.get('/steam/test', function(httpRequest, httpResponse) {
 
-	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=76561198006730825';
+	var url0 = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=76561198006730825';
 
 	var url1 = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=46465097';
 
@@ -61,13 +61,13 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 		console.log(idLastM); 
 		console.log(lastMDirePlayer2);
 	});
-	request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+	request.get(url0, function(error, steamHttpResponse, steamHttpBody) {
 
 		var response = JSON.parse(steamHttpBody);
 		var personaname = response.response.players[0].personaname;
 		var avatar = response.response.players[0].avatarfull;
 		httpResponse.render('test', { personaname: personaname, avatar: avatar });
-	
+
 	});
 
 });
