@@ -71,7 +71,7 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 	});
 
 });
-app.get('/steam/test', function(httpRequest, httpResponse) {
+app.get('/steam/test', function(httpRequest, httpResponse) {});
 
 
 //convert steam 64id into 32id = var 64id - 76561197960265728 = 32id
