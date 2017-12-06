@@ -60,6 +60,21 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 		var lastMDirePlayer5 = response.result.matches[0].players[9];
 		console.log(idLastM); 
 		console.log(lastMDirePlayer2);
+
+		var insertDocument = function(db, callback) {
+			db.collection('match').insertOne( {
+				player: lastMRadiantPlayer5
+			},function(err, result){
+				assert.equal(err, null);
+				callback();
+			});
+		};
+		MongoClient.connect(url, function(err, db) {
+			assert.equal(null, err);
+			insertDocument(db, function() {
+				db.close();
+			});
+		});
 	});
 	request.get(url0, function(error, steamHttpResponse, steamHttpBody) {
 
