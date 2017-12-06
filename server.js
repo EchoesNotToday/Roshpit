@@ -16,6 +16,13 @@ var request = require('request');
 //Pug template package
 app.set('view engine', 'pug');
 
+//Mongo 
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectId;
+var url = 'mongodb://localhost:27017/test';
+
+
 // First test with API
 var secret = require('./secret/api');
 const API_KEY = secret.apiKey;
