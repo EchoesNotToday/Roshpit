@@ -88,7 +88,7 @@ app.get('/steam/test', function(httpRequest, httpResponse) {
 
 });
 
-	var last_100_match_gold = [];
+var last_100_match_gold = [];
 app.get('/steam/test2', function(req, res) {
 	
 	var allM = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825';
@@ -111,7 +111,7 @@ app.get('/steam/test2', function(req, res) {
 				var mdetails = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1/?key='+API_KEY+'&match_id='+result_id[i];
 
 				request.get(mdetails, function(error, steamRes, steamBody) {
- 
+
 					if(steamBody !== undefined){
 						var response2 = JSON.parse(steamBody);
 						var gold_per_min = response2.result.players[0].gold_per_min;
@@ -131,44 +131,66 @@ app.get('/steam/test2', function(req, res) {
 });
 
 
-// var all_match = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825';
-// var match_details = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1/?key='+API_KEY+'&match_id='+result_id[i];
+var all_match = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825';
 
-// var result_last_100_match_id = [];
-// var last_100_match_gold_minute = [];
+var last_100_match_gold_minute = [];
+var match_details = [];
+var result_last_100_match_id = [];
+function get_100_last_match_id(res) {
 
-// function get_100_last_match_id() {
-
-// 	request.get(all_match, function(error, steamHttpResponse, steamHttpBody) {
+	request.get(all_match, function(error, steamHttpResponse, steamHttpBody) {
 		
-// 		var response = JSON.parse(steamHttpBody);
-// 		var num_of_match = response.result.matches;
+		var response = JSON.parse(steamHttpBody);
 		
-// 		for (var i = 0; i<= num_of_match.length-1; i++) {
+		var num_of_match = response.result.matches;
 
-// 			result_last_100_match_id.push(num_of_match[i].match_id);
-// 		}	
-// 	});
-// }
-// function get_details_100_last_matches() {
+		for (var i = 0; i<= num_of_match.length-1; i++) {
 
-// 	for (var i = 0; i<= 1; i++) {
+			result_last_100_match_id.push(num_of_match[i].match_id);
+			
+			var match_ids = num_of_match[i].match_id;
+			
+			match_details.push('http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1/?key='+API_KEY+'&match_id=' + match_ids);
 		
-// 		request.get(match_details, function(error, steamRes, steamBody) {
+		}	
+			
+			get_details_100_last_matches(match_details, 0, res);
+	
+	});
 
-// 			if(steamBody =! undefined) {
+}
 
-// 				var response2 = JSON.parse(steamBody);
+function get_details_100_last_matches(match_details, i, res) {
+	
+	if (i<= match_details.length-1) {
+		
+		request.get(match_details[i], function(error, steamRes, steamBody) {
 
+			if(steamBody !== undefined) {
+
+				var response2 = JSON.parse(steamBody);
 				
-// 			}
-// 		});
-// 	}
-// }
+				var gold_per_min = response2.result.players[0].gold_per_min;
+				
+				last_100_match_gold_minute.push(gold_per_min);	
+			
+			}
+			
+			i++;
+			
+			get_details_100_last_matches(match_details, i, res);
+		
+		});
+
+	}
+	
+	else res.render('test', { personaname : last_100_match_gold_minute });
+
+}
 
 
-// app.get('/steam/test3', function(req, res) {
-// 	get_100_last_match_id();
-// 	console.log(result_last_100_match_id);
-// 	res.render('test', { personaname : result_last_100_match_id });
-// });
+app.get('/steam/test3', function(req, res) {
+
+	get_100_last_match_id(res);
+	
+});
