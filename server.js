@@ -93,7 +93,7 @@ var last_100_match_gold_minute = [];
 var match_details = [];
 var result_last_100_match_id = [];
 var id = "";
-function get_100_last_match_id(res) {
+function get_100_last_match_id_to_details(res) {
 
 	request.get(all_match, function(error, steamHttpResponse, steamHttpBody) {
 		
@@ -102,12 +102,6 @@ function get_100_last_match_id(res) {
 		var total_number_matches = response.result.total_results;
 		
 		var num_of_match = response.result.matches;
-
-		if(result_last_100_match_id.length !== total_number_matches) {
-
-
-
-		}
 
 		for (var i = 0; i<= num_of_match.length-1; i++) {
 
@@ -157,32 +151,98 @@ function get_details_100_last_matches(match_details, i, res) {
 
 app.get('/steam/test3', function(req, res) {
 
-	get_100_last_match_id(res);
+	get_100_last_match_id_to_details(res);
 	var last_100_match_gold_minute = [];
 	var match_details = [];
 	
 });
 
-var result_match_id = [];
 
-function get_number_of_matches() {
+function get_100_last_ids(res) {
+	var get_100_last = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825';
+	var array_match_id = [];
 
-	var total_number_matches = '';
+	request.get(get_100_last, function(err, response, request) {
+		var q = JSON.parse(request);
+		var last_ids = q.result.matches;
 
-	request.get(all_match, function( err, steamHttpResponse, steamBody ) {
+		for(i = 0; i < last_ids.length; i++) {
 
-		var resp = JSON.parse(steamBody);
-		// console.log(steamBody);
-		var total_number_matches = resp.result.total_results;
+			array_match_id.push(last_ids[i].match_id);
+		}
 
-	get_all_matches_id(total_number_matches);
+		last_id = array_match_id[array_match_id.length - 1]
+		get_all_matches_id_2_le_retour_de_la_vengeance(array_match_id, res);
 	});
+}
+
+function get_all_matches_id_2_le_retour_de_la_vengeance(result_match_id, res) {
+
+	var tmp = result_match_id
+	var last_id = tmp[tmp.length - 1]
+	var get_100_more = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825&start_at_match_id='+last_id;
+
+	request.get(get_100_more, function(err, ress, req) {
+		var resp = JSON.parse(req);
+		var num_of_match = resp.result.matches;
+
+		for(i = 1; i < num_of_match.length; i ++) {
+
+			tmp.push(num_of_match[i].match_id);
+		}
+
+		last_id = tmp[result_match_id.length - 1]
+		
+		if(num_of_match.length == 100){
+
+			console.log(last_id)
+			get_all_matches_id_2_le_retour_de_la_vengeance(tmp, res);
+		}
+		console.log(tmp.length);
+	});
+}
+
+function details_all_matches() {
 
 }
 
+app.get('/steam/test4', function(req, res) {
+	get_100_last_ids(res);
+	// get_number_of_matches();
+	// console.log(result_match_id);
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function get_all_matches_id(total_number_matches, numb_match_remaining, j ) {
 
-	var get_100_more = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825';
+	var get_100_last = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825';
 
 	var numb_match_remaining;
 	if(result_match_id.length == 0) {
@@ -207,32 +267,51 @@ function get_all_matches_id(total_number_matches, numb_match_remaining, j ) {
 	}
 	else {
 		get_100_more = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825&start_at_match_id'+result_match_id[result_match_id.length-1];
-		console.log(result_match_id[result_match_id.length-1], numb_match_remaining)
+		// console.log(result_match_id[result_match_id.length-1], numb_match_remaining)
+		// console.log(result_match_id);
+		console.log('je suis dans la fonction à nouveau\nnumber'+numb_match_remaining);
 		while(numb_match_remaining > 0) {
-			request.get(get_100_more, function(err, res, req) {
+			var count = 0;
+			request.get({
+				"encoding": "UTF-8",
+				"method": "GET",
+				"uri": 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key='+API_KEY+'&account_id=76561198006730825&start_at_match_id'+result_match_id[result_match_id.length-1]
+			},function(err, res, req) {
+				//console.log(res+'\n'+req)
+				if(err){
+					throw err;
+				}
 				var resp = JSON.parse(req);
 				var num_of_match = resp.result.matches;
+				var numb_match_remaining = resp.result.results_remaining;
+				console.log(num_of_match);
 
-				for(i = 0; i < num_of_match.length; i++) {
+				for(j = 0; j < num_of_match.length; j++) {
 
-					result_match_id.push(num_of_match[i].match_id);
+					result_match_id.push(num_of_match[j].match_id);
+					console.log(count++);
+				}
+					numb_match_remaining = 0;
+					console.log(result_match_id.length);
+					
+				});
+			/*request.get(get_100_more, function(err, res, req) {
+				var resp = JSON.parse(req);
+				var num_of_match = resp.result.matches;
+				// console.log(num_of_match);
+
+				for(j = 0; j < num_of_match.length; j++) {
+
+					result_match_id.push(num_of_match[j].match_id);
 
 				}
 					numb_match_remaining = 0;
 					// console.log(result_match_id.length);
 					
-			});
+			});*/
 		}
 
 	}
 
 	
 }
-
-
-app.get('/steam/test4', function(req, res) {
-
-	get_number_of_matches();
-	// console.log(result_match_id);
-
-});
