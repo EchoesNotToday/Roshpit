@@ -172,11 +172,11 @@ function get_100_last_ids(res) {
 		}
 
 		last_id = array_match_id[array_match_id.length - 1]
-		get_all_matches_id_2_le_retour_de_la_vengeance(array_match_id, res);
+		get_all_matches_ids(array_match_id, res);
 	});
 }
 
-function get_all_matches_id_2_le_retour_de_la_vengeance(result_match_id, res) {
+function get_all_matches_ids(result_match_id, res) {
 
 	var tmp = result_match_id
 	var last_id = tmp[tmp.length - 1]
@@ -196,7 +196,7 @@ function get_all_matches_id_2_le_retour_de_la_vengeance(result_match_id, res) {
 		if(num_of_match.length == 100){
 
 			console.log(last_id)
-			get_all_matches_id_2_le_retour_de_la_vengeance(tmp, res);
+			get_all_matches_ids(tmp, res);
 		}
 		console.log(tmp.length);
 	});
