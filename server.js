@@ -16,16 +16,103 @@ var request = require('request');
 //Pug template package
 app.set('view engine', 'pug');
 
+//Session
+var session = require('express-session');
+
 //Mongo 
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectId;
 var url = 'mongodb://localhost:27017/test';
 
+//Mongoose
+var mongoose = require('mongoose');
 
-// First test with API
+var Schema = mongoose.Schema;
+
+var db_user_schema = new Schema({
+	id : String
+});
+
+var user_db = mongoose.model('user', db_user_schema);
+
+mongoose.connect('mongodb://localhost:27017/test', { autoIndex: false });
+
+const MongoStore = require('connect-mongo')(session);
+
+app.use(session({
+	store:  new MongoStore({mongooseConnection: mongoose.connection}),
+	collection: 'user',	
+	secret: 'NoSQLisGreat',
+	resave: false,
+	saveUninitialized: true
+}));
+
+//Passport
+var passport = require('passport'),
+	SteamStrategy = require('passport-steam').Strategy;
+
+
+//API Key
 var secret = require('./secret/api');
 const API_KEY = secret.apiKey;
+
+
+
+passport.use(new SteamStrategy({
+    returnURL: 'http://localhost:4000/auth/steam/return',
+    realm: 'http://localhost:4000/',
+    apiKey: API_KEY
+  },
+  function(identifier, profile, done) {
+  	console.log(identifier);
+  	process.nextTick(function(){
+  		var user = {
+  			identifier: identifier,
+  			steamId: identifier.match(/\d+$/)[0]
+  		};
+  		console.log(user.steamId);
+      	return done(null, user);
+  	});
+    // User.findByOpenID({ openId: identifier }, function (err, user) {
+    // });
+  }
+));
+passport.serializeUser(function(user, done) {
+  done(null, user.identifier);
+});
+
+passport.deserializeUser(function(identifier, done) {
+	console.log('Deserialize user called.');
+	console.log(id);
+	done(null, {
+		identifier: identifier,
+		steamId: identifier.match(/\d+$/)[0]
+	});
+  	// return done(null, { steam_64_id : id });
+  // User.findById(id, function (err, user) {
+  //   done(err, user);
+  // });
+});
+// app.use(session({ secret: 'anything' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/auth/steam',
+  passport.authenticate('steam'),
+  function(req, res) {
+    // The request will be redirected to Steam for authentication, so
+    // this function will not be called.
+  });
+
+app.get('/auth/steam/return',
+  passport.authenticate('steam', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+// First test with API
 app.get('/steam/profile', function(httpRequest, httpResponse) {
 	var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/'+'v0002/?key='+API_KEY+'&steamids=76561198006730825';
 	console.log(url);
@@ -34,8 +121,10 @@ app.get('/steam/profile', function(httpRequest, httpResponse) {
 		httpResponse.send(steamHttpBody);
 	});
 });
-
-//Response with render
+app.get('/', function(req, res){
+	res.render('test', {personaname: 'coucou'})
+})
+//Response with render and insert in Mongodb
 app.get('/steam/test', function(httpRequest, httpResponse) {
 
 	var url0 = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key='+API_KEY+'&steamids=76561198006730825';
@@ -109,7 +198,6 @@ function get_100_last_match_id_to_details(res) {
 			
 			var match_ids = num_of_match[i].match_id;
 
-			
 			match_details.push('http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1/?key='+API_KEY+'&match_id=' + match_ids);
 
 		}	
@@ -195,20 +283,23 @@ function get_all_matches_ids(result_match_id, res) {
 		
 		if(num_of_match.length == 100){
 
-			console.log(last_id)
 			get_all_matches_ids(tmp, res);
 		}
 		console.log(tmp.length);
 	});
 }
 
-function details_all_matches() {
+function details_all_matches(result_match_id, res) {
+
+	for(i = 0; i <= tmp.length-1; i++) {
+
+		
+	}
 
 }
 
 app.get('/steam/test4', function(req, res) {
+	
 	get_100_last_ids(res);
-	// get_number_of_matches();
-	// console.log(result_match_id);
 
 });

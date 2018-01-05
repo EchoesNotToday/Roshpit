@@ -18,10 +18,14 @@
   },
   "homepage": "https://github.com/EchoesNotToday/Roshpit#readme",
   "dependencies": {
+    "connect-mongo": "^2.0.1",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
     "mongodb": "^2.2.33",
     "mongoose": "^5.0.0-rc1",
     "nodemon": "^1.12.1",
+    "passport": "^0.4.0",
+    "passport-openid": "^0.4.0",
     "passport-steam": "^1.0.8",
     "pug": "^2.0.0-rc.4",
     "request": "^2.83.0"
